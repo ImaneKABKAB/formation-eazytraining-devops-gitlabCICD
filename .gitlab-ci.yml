@@ -13,10 +13,10 @@ stages:
   - deploy prod
   - test prod
 variables:
-  STAGING_DOMAIN: static-website-staging.herokuapp.com
-  STAGING_DOMAIN_PAGE: static-website-staging.herokuapp.com/#intro
-  PRODUCTION_DOMAIN: static-website-production.herokuapp.com
-  PRODUCTION_DOMAIN_PAGE: static-website-production.herokuapp.com/#intro
+  STAGING_DOMAIN: "static-website-staging.herokuapp.com"
+  STAGING_DOMAIN_PAGE: "static-website-staging.herokuapp.com/#intro"
+  PRODUCTION_DOMAIN: "static-website-production.herokuapp.com"
+  PRODUCTION_DOMAIN_PAGE: "static-website-production.herokuapp.com/#intro"
 .build-job:
     stage: build
     script:
