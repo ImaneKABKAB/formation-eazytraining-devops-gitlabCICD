@@ -16,9 +16,9 @@ stages:
 
 variables:
   STAGING_DOMAIN: "static-website-staging.herokuapp.com"
-  STAGING_DOMAIN_PAGE: "static-website-staging.herokuapp.com/#intro"
   PRODUCTION_DOMAIN: "static-website-production.herokuapp.com"
-  PRODUCTION_DOMAIN_PAGE: "static-website-production.herokuapp.com/#intro" 
+  REVIEW_DOMAIN: "static-website-review-$CI_COMMIT_REF_NAME.herokuapp.com"
+  
 .build-job:
     stage: build
     script:
@@ -46,7 +46,38 @@ variables:
       - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" "${CI_REGISTRY}"
       - docker push "${STATIC_IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}"
       - docker push  "${STATIC_IMAGE_NAME}:${CI_COMMIT_REF_NAME}"
-      
+
+review-job:
+    stage: deploy review
+    environment:
+      name: review/$CI_COMMIT_REF_NAME
+      url: https://$REVIEW_DOMAIN
+      on_stop: stop-review-job
+    only:
+      - merge_requests
+    script:
+      - apk add --update nodejs npm
+      - npm install -g heroku
+      - heroku container:login
+      - heroku create static-website-review-$CI_COMMIT_REF_NAME || echo "application already exists"
+      - heroku container:push -a static-website-review-$CI_COMMIT_REF_NAME web
+      - heroku container:release -a static-website-review-$CI_COMMIT_REF_NAME web
+
+stop-review-job:
+   stage: stop review
+   environment:
+     name: review/$CI_COMMIT_REF_NAME
+     action: stop
+   only:
+     - merge_requests
+   variables:
+     GIT_STRATEGY: none
+   script:
+     - apk add --update nodejs npm
+     - npm install -g heroku
+     - heroku container:login
+     - heroku apps:destroy -a static-website-review-$CI_COMMIT_REF_NAME --confirm=static-website-review-$CI_COMMIT_REF_NAME
+
 staging-job:
     stage: deploy staging
     environment:
@@ -85,18 +116,16 @@ production-job:
       - apk add --no-cache curl
     script:
       - curl "https://$APP_DOMAIN" | grep -i "dimension"
-      - curl "https://$APP_DOMAIN_PAGE" | grep -i "intro"
 
 validate-staging:
    <<: *test_job
    stage: test staging
    variables:
       APP_DOMAIN: $STAGING_DOMAIN
-      APP_DOMAIN_PAGE: $STAGING_DOMAIN_PAGE
 
 validate-production:
    <<: *test_job
    stage: test prod
    variables:
      APP_DOMAIN: $PRODUCTION_DOMAIN
-     APP_DOMAIN_PAGE: $PRODUCTION_DOMAIN_PAGE
+     
