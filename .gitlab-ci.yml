@@ -1,0 +1,22 @@
+stages:
+  - build
+  - test
+  - release
+  - deploy review
+  - stop review
+  - deploy staging
+  - test staging
+  - deploy prod
+  - test prod
+build-job:
+    image: docker:latest
+    services:
+        - name: docker:dind
+          alias: docker
+    stage: build
+    script:
+        - docker build -t static-website .
+        - docker save static-website > static-website.tar
+    artifacts:
+        paths:
+          - static-website.tar
