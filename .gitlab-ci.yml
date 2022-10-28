@@ -2,6 +2,7 @@ image: docker:latest
 services:
   - name: docker:dind
     alias: docker
+
 stages:
   - build
   - test
@@ -12,11 +13,11 @@ stages:
   - test staging
   - deploy prod
   - test prod
+
 variables:
   STAGING_DOMAIN: "static-website-staging.herokuapp.com"
-  #STAGING_DOMAIN_PAGE: "static-website-staging.herokuapp.com/#intro"
   PRODUCTION_DOMAIN: "static-website-production.herokuapp.com"
-  #PRODUCTION_DOMAIN_PAGE: "static-website-production.herokuapp.com/#intro"
+  
 .build-job:
     stage: build
     script:
@@ -33,7 +34,7 @@ variables:
       - docker run --name website -d -p 80:8080 -e PORT=8080 static-website
       - sleep 5
       - apk add --no-cache curl
-      - curl "http://docker" | grep -q "Dimension"
+      - curl "http://docker:8080" | grep -q "Dimension"
 
 .release-job:
     stage: release
@@ -83,18 +84,15 @@ production-job:
       - apk add --no-cache curl
     script:
       - curl "https://$APP_DOMAIN" | grep -q -i "dimension"
-     # - curl "https://$APP_DOMAIN_PAGE"  | grep -q -i "intro"
 
 validate-staging:
    <<: *test_job
    stage: test staging
    variables:
       APP_DOMAIN: $STAGING_DOMAIN
-      #APP_DOMAIN_PAGE: $STAGING_DOMAIN_PAGE
 
 validate-production:
    <<: *test_job
    stage: test prod
    variables:
      APP_DOMAIN: $PRODUCTION_DOMAIN
-     #APP_DOMAIN_PAGE: $PRODUCTION_DOMAIN_PAGE
