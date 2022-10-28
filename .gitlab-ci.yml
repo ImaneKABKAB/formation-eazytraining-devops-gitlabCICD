@@ -40,5 +40,20 @@ release-job:
       - docker push "${STATIC_IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}"
       - docker push  "${STATIC_IMAGE_NAME}:${CI_COMMIT_REF_NAME}"
       
+staging-job:
+    stage: deploy staging
+    environment:
+       name: staging
+       url: https://static-website-staging.herokuapp.com
+    only:
+      - master
+    script:
+      - apk add --update nodejs npm
+      - npm install -g heroku
+      - heroku container:login
+      - heroku create static-website-staging || echo "application already exists"
+      - heroku container:push -a static-website-staging web
+      - heroku container:release -a static-website-staging web
+
 
 
