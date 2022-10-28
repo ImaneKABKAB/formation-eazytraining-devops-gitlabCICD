@@ -19,7 +19,7 @@ variables:
   PRODUCTION_DOMAIN: "static-website-production.herokuapp.com"
   REVIEW_DOMAIN: "static-website-review-$CI_COMMIT_REF_NAME.herokuapp.com"
   
-.build-job:
+build-job:
     stage: build
     script:
         - docker build -t static-website .
@@ -28,7 +28,7 @@ variables:
         paths:
           - static-website.tar
   
-.test-job:
+test-job:
     stage: test
     script:
       - docker load < static-website.tar 
@@ -37,7 +37,7 @@ variables:
       - apk add --no-cache curl
       - curl "http://docker:8080" | grep -q "Dimension"
 
-.release-job:
+release-job:
     stage: release
     script:
       - docker load < static-website.tar
