@@ -12,7 +12,7 @@ stages:
   - test staging
   - deploy prod
   - test prod
-.build-job:
+build-job:
     stage: build
     script:
         - docker build -t static-website .
