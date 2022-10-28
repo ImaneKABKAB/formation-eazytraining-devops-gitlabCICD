@@ -70,6 +70,7 @@ stop-review-job:
      action: stop
    only:
      - merge_requests
+   when: manual
    variables:
      GIT_STRATEGY: none
    script:
