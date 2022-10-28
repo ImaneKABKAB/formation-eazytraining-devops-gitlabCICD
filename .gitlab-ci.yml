@@ -55,5 +55,19 @@ staging-job:
       - heroku container:push -a static-website-staging web
       - heroku container:release -a static-website-staging web
 
+production-job:
+    stage: deploy prod
+    environment:
+      name: production
+      url: https://static-website-production.herokuapp.com
+    only:
+      - master
+    script:
+      - apk add --update nodejs npm
+      - npm install -g heroku
+      - heroku container:login
+      - heroku create static-website-production || echo "application already exists"
+      - heroku container:push -a static-website-production web
+      - heroku container:release -a static-website-production web
 
 
