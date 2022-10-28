@@ -30,3 +30,15 @@ test-job:
       - apk add --no-cache curl
       - curl "http://docker" | grep -q "Dimension"
 
+release-job:
+    stage: release
+    script:
+      - docker load < static-website.tar
+      - docker tag static-website "${STATIC_IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}"
+      - docker tag static-website "${STATIC_IMAGE_NAME}:${CI_COMMIT_REF_NAME}"
+      - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" "${CI_REGISTRY}"
+      - docker push "${STATIC_IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}"
+      - docker push  "${STATIC_IMAGE_NAME}:${CI_COMMIT_REF_NAME}"
+      
+
+
