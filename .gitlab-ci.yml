@@ -83,7 +83,7 @@ production-job:
     before_script:
       - apk add --no-cache curl
     script:
-      - curl "https://$APP_DOMAIN" | grep -q -i "dimension"
+      - curl "https://$APP_DOMAIN" | grep -i "dimension"
 
 validate-staging:
    <<: *test_job
