@@ -14,9 +14,9 @@ stages:
   - test prod
 variables:
   STAGING_DOMAIN: "static-website-staging.herokuapp.com"
-  STAGING_DOMAIN_PAGE: "static-website-staging.herokuapp.com/#intro"
+  #STAGING_DOMAIN_PAGE: "static-website-staging.herokuapp.com/#intro"
   PRODUCTION_DOMAIN: "static-website-production.herokuapp.com"
-  PRODUCTION_DOMAIN_PAGE: "static-website-production.herokuapp.com/#intro"
+  #PRODUCTION_DOMAIN_PAGE: "static-website-production.herokuapp.com/#intro"
 .build-job:
     stage: build
     script:
@@ -79,21 +79,22 @@ production-job:
     image: alpine
     only:
       - master
-    script:
+    before_script:
       - apk add --no-cache curl
+    script:
       - curl "https://$APP_DOMAIN" | grep -q -i "dimension"
-      - curl "https://$APP_DOMAIN_PAGE"  | grep -q -i "intro"
+     # - curl "https://$APP_DOMAIN_PAGE"  | grep -q -i "intro"
 
 validate-staging:
    <<: *test_job
    stage: test staging
    variables:
       APP_DOMAIN: $STAGING_DOMAIN
-      APP_DOMAIN_PAGE: $STAGING_DOMAIN_PAGE
+      #APP_DOMAIN_PAGE: $STAGING_DOMAIN_PAGE
 
 validate-production:
    <<: *test_job
    stage: test prod
    variables:
      APP_DOMAIN: $PRODUCTION_DOMAIN
-     APP_DOMAIN_PAGE: $PRODUCTION_DOMAIN_PAGE
+     #APP_DOMAIN_PAGE: $PRODUCTION_DOMAIN_PAGE
