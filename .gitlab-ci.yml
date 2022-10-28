@@ -35,7 +35,7 @@ test-job:
       - docker run --name website -d -p 80:8080 -e PORT=8080 static-website
       - sleep 5
       - apk add --no-cache curl
-      - curl "http://docker:8080" | grep -q "Dimension"
+      - curl "http://docker" | grep -q "Dimension"
 
 release-job:
     stage: release
