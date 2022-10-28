@@ -13,10 +13,10 @@ stages:
   - deploy prod
   - test prod
 variables:
-  STAGING_DOMAIN: https://static-website-staging.herokuapp.com
-  STAGING_DOMAIN_PAGE: https://static-website-staging.herokuapp.com/#intro
-  PRODUCTION_DOMAIN: https://static-website-production.herokuapp.com
-  PRODUCTION_DOMAIN_PAGE: https://static-website-production.herokuapp.com/#intro
+  STAGING_DOMAIN: static-website-staging.herokuapp.com
+  STAGING_DOMAIN_PAGE: static-website-staging.herokuapp.com/#intro
+  PRODUCTION_DOMAIN: static-website-production.herokuapp.com
+  PRODUCTION_DOMAIN_PAGE: static-website-production.herokuapp.com/#intro
 build-job:
     stage: build
     script:
@@ -49,7 +49,7 @@ staging-job:
     stage: deploy staging
     environment:
        name: staging
-       url: $STAGING_DOMAIN
+       url: https://$STAGING_DOMAIN
     only:
       - master
     script:
@@ -64,7 +64,7 @@ production-job:
     stage: deploy prod
     environment:
       name: production
-      url: $PRODUCTION_DOMAIN
+      url: https://$PRODUCTION_DOMAIN
     only:
       - master
     script:
