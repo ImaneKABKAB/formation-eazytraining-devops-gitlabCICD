@@ -55,8 +55,8 @@ CI/CD pipeline is based on jobs defined in .gitlab-ci.yml file and executed by r
 Every job must contain at least :
 
  1.A base image and some services
- 2. stage section to define the working stage
- 3. script section to list instructions
+ 2.stage section to define the working stage
+ 3.script section to list instructions
 
 Create a .gitlab-ci.yml file in the gitlab repo.
 
