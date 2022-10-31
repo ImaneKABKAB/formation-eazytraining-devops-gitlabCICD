@@ -2,7 +2,7 @@
 
 we gonna create a Gitlab CI/CD pipeline to deploy  a static website in a staging environment and a production environment.
 
-Here is the project gileb repo link [static-website-example](https://gitlab.com/zinima/static-website-example) .
+Here is the project gitlab repo link [static-website-example](https://gitlab.com/zinima/static-website-example) .
 
 prerequisites:
 
