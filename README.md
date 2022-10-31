@@ -25,7 +25,9 @@ So we can use Heroku , we have to configure nginx to variabilize the port.
 
 1.Create a nginx.conf file in the gitleb repo (static-website-example):
 
+
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git24.PNG)
+
 
 The **PORT** variable within the listen directive refers to the listening port of the server for our application .
 
@@ -35,7 +37,9 @@ In the location bloc , we specify the directory containing the website files wit
 
 Create a Dockerfile in the same gitlab repo:
 
+
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git25.PNG)
+
 
 Dockerfile instructions:
  1. you start from the base image nginx:1.23.2-alpine
@@ -65,14 +69,18 @@ Create a .gitlab-ci.yml file in the gitlab repo.
  1. Define the image and services used to run the jobs globally at the beginning of the .gitlab-ci.yml .
  2. List the stages of the pipeline 
  
+ 
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git26.PNG) 
   
+
 
 ### Build job
 
 This job will build the Dockerfile and generate an artifact which is an archive static-website.tar.
 
+
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git27.PNG)
+
 
 job instructions:
 
@@ -83,8 +91,10 @@ job instructions:
  Once you commit these changes , a pipeline will start.
  
 - Go to CI/CD>pipelines , you should see this result:
+- 
 
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git28.PNG)
+
 
 
 ###  Test job
@@ -96,10 +106,15 @@ This job will test the produced artifact.
  3. Wait 5 seconds to be sure that the container started :`sleep 5`
  4. Install curl : `apk add --no-cache curl`
  5. Get the website content and test if it contains the word Dimension:`curl "http://docker" | grep -q "Dimension"`
+ 
+ 
  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git29.PNG)
+ 
  
  6. Commit these changes in .gitlab-ci.yml 
  7. Go to CI/CD>pipelines , you should see this result:
+ 
+ 
  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git30.PNG)
  
  
@@ -109,7 +124,10 @@ This job will release the produced image with a name and a significant tag and s
 
  1. Create an env variable called STATIC_IMAGE_NAME
      go to settings>CI/CD , expand the variables section and click on **add variable** :
+     
+     
       ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git31.PNG)
+      
       
       following the image , you specify a variable key **STATIC_IMAGE_NAME**
       and a variable value **registry.gitlab.com/your_username/your_working_gitlab_repo**
@@ -121,11 +139,16 @@ This job will release the produced image with a name and a significant tag and s
  6. push the 2 images : `docker push "${STATIC_IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}"`
 `docker push "${STATIC_IMAGE_NAME}:${CI_COMMIT_REF_NAME}"`
 
+
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git32.PNG)
+
 
  7. Commit these changes 
  8.  Go to CI/CD>pipelines , you should see this result:
+
+
  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git33.PNG)
+ 
  
 ### Deployment
 
@@ -133,16 +156,26 @@ We gonna deploy the website to 2 env staging and production using Heroku .
 
  1. Create a heroku account.
  2. Go to your heroku account settings and copy the API key 
+
+
  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git34.PNG)
+ 
   
  3. Create an env variable called HEROKU_API_KEY
      go to settings>CI/CD , expand the variables section and click on **add variable** :
+     
+     
      ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git35.PNG)
+     
      
       following the image , you specify a variable key **HEROKU_API_KEY**
       and a variable value **your_heroku_api_key** which is the copied API key in step 2 .
  4. Define these global variables at the beginning of .gitlab-ci.yml:
- 5. ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git36.PNG) 
+
+
+  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git36.PNG) 
+  
+  
 
 #### Staging job
 
@@ -157,11 +190,19 @@ In .gitlab-ci.yml :
   if you encounter a problem with the application name try to change it . 
  6. push the image to heroku container registry as web image(at this step heroku will rebuild the pushed image) : `heroku container:push -a static-website-staging web`
  7. release the image and run the container :`heroku container:release -a static-website-staging web`
+
+
  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git37.PNG) 
+ 
+ 
  
  8. Commit these changes
  9. Go to CI/CD>pipelines, you should see this result:
+
+
  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git38.PNG) 
+ 
+ 
 
 #### Production job
 
@@ -169,18 +210,27 @@ This job will deploy  the website in a production environment .
 
 In .gitlab-ci.yml add the same instructions as in staging job with  slight changes:
 
+
+
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git39.PNG)
+
+
 
 - Commit thes changes.
 - Go to CI/CD>pipelines , you should have this result:
 
+
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git40.PNG)
+
 
 #### Validate staging and production env
 
 To validate both staging and production env , we gonna run 2 tests **validate-staging** and **validate-production** based on a job template :
 
+
+
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git41.PNG)
+
 
 In these tests you simply:
 
@@ -188,7 +238,11 @@ In these tests you simply:
  2. Get the website content and check if it contains the word **Dimension**
  3. Commit these changes
  4. Go to CI/CD>pipelines, you'll have tis result:
+
+
  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git42.PNG)
+ 
+ 
 
 ### Merge changes to master branch
 
@@ -200,7 +254,11 @@ This job deploy the website with added changes to a dynamic environment.
 
 In .gitlab-ci.yml add the same instructions as in staging job with  slight changes:
 
+
+
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git43.PNG)
+
+
 
 ⚠️In environment section , we add the instruction on_stop to define the name of the job that gonna stop and delete the dynamic env.
 
@@ -214,7 +272,10 @@ In .gitlab-ci.yml add the same instructions as in staging job with  slight chang
 
  1. Specify that this job runs only in case of merge requests :`- merge_requests`
  2. Mention that this job runs manually so you can test the website in dynamic env and stop it manually : `when: manual`
+
+
  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git44.PNG)
+ 
  
  3. Commit the changes to master branch .
  4. Go to CI/CD>pipelines , and stop the launched pipeline o master branch because it's triggered by adding review-job and stop-review-job.
@@ -222,9 +283,14 @@ In .gitlab-ci.yml add the same instructions as in staging job with  slight chang
 #### Feature branch
 
  1. Add a branch named **feature** to the gitlab repo
+
+
   ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git45.PNG)
   
+  
+  
  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git46.PNG)
+ 
 
 
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git47.PNG)
@@ -232,64 +298,108 @@ In .gitlab-ci.yml add the same instructions as in staging job with  slight chang
  2. Go to feature branch
  3. Go to static-website-example>index.html
  4. Add these changes and commit:
+
+
   ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git48.PNG)
+
 
 
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git49.PNG)
 
 
+
  5. This message will appear , click on create merge request:
+
+
 
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git50.PNG)
 
+
+
  6. Fill in this form and click on create merge request:
+
+
  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git51.PNG)
+ 
  
  
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git52.PNG)
 
+
  7.Go to CI/CD>pipelines , you should see 2  launched pipelines  :
+ 
+ 
  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git53.PNG)
+
 
 This means that the new version of the website is deployed to a dynamic env.
 
  8. Go to your heroku account dashboard, you should see a new added app:
+
+
  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git54.PNG)
  
  
  9. Open the app, you'll have this result:
+
+
  
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git55.PNG)
+ 
+ 
  
 In the above image , we see that a new item **TEST** is successfully added to the menu list.
 
  10. Go to Merge requests>click on the  existing open merge request>click on Merge:
+
+
  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git56.PNG)
+ 
+ 
  
         This way the changes will be merged to master branch and feature branch will be deleted.
         
  11. Go to CI/CD>pipelines and start start manually the stop-review-job by clicking on run icon on right side:
+
+
   ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git53.PNG)
+  
   
      This will delete the dynamic env.
      
  12.Go to CI/CD>pipelines, you sould have this result:
+ 
+ 
  ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git57.PNG) 
+ 
+ 
  
 13.Go to your gitlab repo , you should have one branch master:
 
+
+
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git58.PNG)
 
+
+
 14.Go to Deployment>Environments, you should have 2 available env and one stopped env:
+
+
 
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git59.PNG)
 
 
+
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git60.PNG)
+
+
 
 In your heroku account dashboard , you should have 2 deployed applications:
 
+
+
 ![private](https://github.com/ImaneKABKAB/formation-eazytraining-devops-gitlabCICD/blob/master/images/git61.PNG)
+
 
 
 15.Open the 2 apps , they should look like this [static-website-production.herokuapp.com](https://static-website-production.herokuapp.com/) and [static-website-staging.herokuapp.com](https://static-website-staging.herokuapp.com/)
